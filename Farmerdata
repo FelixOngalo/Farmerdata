@@ -1,0 +1,77 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FarmerDataAnalysis
+{
+    // Farmer Class to hold farmer details
+    class Farmer
+    {
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public double FarmSize { get; set; } // in acres or hectares
+        public string CropType { get; set; }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<Farmer> farmers = new List<Farmer>();
+            Console.WriteLine("=== Farmer Data Input System ===");
+            string choice;
+
+            do
+            {
+                Farmer farmer = new Farmer();
+
+                Console.Write("Enter Farmer Name: ");
+                farmer.Name = Console.ReadLine();
+
+                Console.Write("Enter Farmer Age: ");
+                farmer.Age = int.Parse(Console.ReadLine());
+
+                Console.Write("Enter Farm Size (in acres): ");
+                farmer.FarmSize = double.Parse(Console.ReadLine());
+
+                Console.Write("Enter Crop Type: ");
+                farmer.CropType = Console.ReadLine();
+
+                farmers.Add(farmer);
+
+                Console.Write("Add another farmer? (y/n): ");
+                choice = Console.ReadLine();
+
+            } while (choice.ToLower() == "y");
+
+            Console.WriteLine("\n=== Data Analysis ===");
+
+            if (farmers.Count > 0)
+            {
+                double avgAge = farmers.Average(f => f.Age);
+                double totalFarmSize = farmers.Sum(f => f.FarmSize);
+
+                var cropGroups = farmers
+                                 .GroupBy(f => f.CropType)
+                                 .Select(g => new { Crop = g.Key, Count = g.Count() });
+
+                Console.WriteLine($"Total Farmers: {farmers.Count}");
+                Console.WriteLine($"Average Age of Farmers: {avgAge:F2}");
+                Console.WriteLine($"Total Farm Size: {totalFarmSize} acres");
+
+                Console.WriteLine("\nNumber of Farmers per Crop Type:");
+                foreach (var group in cropGroups)
+                {
+                    Console.WriteLine($"{group.Crop}: {group.Count}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No farmer data available.");
+            }
+
+            Console.WriteLine("\nPress any key to exit...");
+            Console.ReadKey();
+        }
+    }
+}
